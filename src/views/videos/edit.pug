@@ -1,0 +1,12 @@
+extends ../base
+
+block content 
+    h4 Change Title of video
+        //-action값 없으면 현재 주소로 post/get
+        form(method="POST") 
+            input(name="title", placeholder="Video Title", value=video.title, required)
+            input(name="description", placeholder="Description", required, type="text", minlength=20, value=video.description)
+            input(name="hashtags", placeholder="Hashtags, seperated by comma.", required, type="text", value=video.hashtags.join())
+            //- join()으로 배열값 연결
+            input(value="Save", type="submit")
+

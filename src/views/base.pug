@@ -1,0 +1,18 @@
+doctype html 
+html(lang="ko")
+    head
+        //- locals에 저장된 데이터 #{}로 사용 가능
+        //- 받아올 변수 설정 가능. 다른 텍스트와 같이 쓸때 #{} 형식 사용
+        title #{pageTitle} / #{siteName} 
+        link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css")
+        link(rel='stylesheet', href='/assets/css/styles.css')
+    body
+        include partials/header
+        main 
+            block content 
+            //- 변경될 내용이 들어갈 공간 : block
+        include partials/footer
+        //- 변경사항 없는 공통 html
+
+    block scripts
+    //- 기존 css 말고 더 수정하려면 다른 view에 main.js script 추가해야 함
