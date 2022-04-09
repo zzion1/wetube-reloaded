@@ -1,8 +1,9 @@
 const video = document.querySelector("video");
 const playBtn = document.querySelector("#play");
 const muteBtn = document.querySelector("#mute");
-const time = document.querySelector("#time");
 const volumeRange = document.querySelector("#volume");
+const currentTime = document.querySelector("#currentTime");
+const totalTime = document.querySelector("#totalTime");
 
 // ### 기본 작동 원리 : video 태그의 volume, play, pause 등의 속성들과
 // 새로 만들어진 html 조절 태그들의 값을 연동시켜줌
@@ -53,11 +54,36 @@ const handleVolumeInput = (event) => {
 
 }
 
+// 비디오 총 시간
+// event를 안받아도 loadedmetadata 이벤트가 발생해
+// 아래 함수가 실행되어야지 video의 duration을 알 수 있다.
+const handleLoadedmetadata = () => {
+  console.log(formatTime(13));
+  totalTime.innerText = formatTime(Math.floor(video.duration));
+}
+
+// 비디오 진행시간
+const handleTimeUpdate = (event) => {
+  // 시간 태그 안에 비디오 진행 시간을 넣어주되
+  // timeupdate 발생 시마다 넣어줘서 실시간 업데이트됨
+  currentTime.innerText = formatTime(Math.floor(video.currentTime)) + " ";
+}
+
+// 시간 형식 변경
+// 중괄호 안에 return을 써주지 않으면 변수가 값을 받지 못한다!!!!!
+const formatTime = (seconds) => {
+  return new Date(seconds * 1000).toISOString().substring(14,19);
+}
 
 // 이벤트 리스너
 playBtn.addEventListener("click", handlePlayClick);
 muteBtn.addEventListener("click", handleMute);
 volumeRange.addEventListener("input", handleVolumeInput); 
+video.addEventListener("loadedmetadata", handleLoadedmetadata); // video 이외 정보(duration)
+video.addEventListener("timeupdate", handleTimeUpdate); // video의 진행 위치(시간) update시 발생
+
+
+
 // mdn 문서 event에 나왔있듯이 
 // change : 마우스 놓을 때 이벤트 발생
 // input : 실시간으로 이벤트 발생

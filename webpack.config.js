@@ -7,7 +7,7 @@ module.exports = {
     videoPlayer: "./src/client/js/videoPlayer.js"
   },
   mode: "development", //production모드이면 output에 코드를 계속 압축한다.
-  watch: true,
+  watch: true, // 계속 업데이트
   plugins: [new MiniCssExtractPlugin({
     filename: "css/styles.css"
   })],
@@ -19,7 +19,7 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.js$/, // js파일을 변환 시킬 것
+        test: /\.js$/, // js파일을 변환
         use: {
           loader: 'babel-loader', // 바벨 로더 사용
           options: {
@@ -30,7 +30,7 @@ module.exports = {
         }
       },
       {
-        test: /\.scss$/,
+        test: /\.scss$/, // scss파일을 변환
         use: [MiniCssExtractPlugin.loader, "css-loader", "sass-loader"] // webpack은 역순으로 읽음
       }
     ]
