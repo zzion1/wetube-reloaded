@@ -1,23 +1,73 @@
 const video = document.querySelector("video");
-const play = document.querySelector("#play");
-const mute = document.querySelector("#mute");
+const playBtn = document.querySelector("#play");
+const muteBtn = document.querySelector("#mute");
 const time = document.querySelector("#time");
-const volume = document.querySelector("#volume");
+const volumeRange = document.querySelector("#volume");
 
-const handlePlay = (e) => {
+// ### 기본 작동 원리 : video 태그의 volume, play, pause 등의 속성들과
+// 새로 만들어진 html 조절 태그들의 값을 연동시켜줌
 
-}
+// 볼륨 값 변수 설정
+let volumeValue = 0.5 
+video.volume = volumeValue; // 비디오 볼륨 값 디폴트 0.5 (html 태그와 동일하게 설정)
 
-const handleMute = (e) => {
+// 재생버튼 클릭 시 콜백함수
+const handlePlayClick = (e) => {
   // 원래 paused 상태였을 경우 클릭 시 재생
-  if (video.paused){
-    video.play();
+  if (video.paused){ // 정지 여부 반환
+    video.play(); // 시작 메서드
   }
   // 반대 경우 수행
   else{
-    video.paused();
+    video.pause();
   }
+  playBtn.innerText = video.paused ? "Play" : "Pause";
+}
+// 뮤트버튼 클릭 시 콜백함수
+const handleMute = (e) => {
+  if (video.muted){
+    // 메서드로 만들지 않고 아래와 같이 동작하게 함
+    // mdn 문서에서 readOnly가 아니어야지 가능
+    video.muted = false; 
+  }
+  else{
+    video.muted = true;
+  }
+  // 버튼 안 글자를 삼항연산자로 변환
+  muteBtn.innerText = video.muted ? "Unmute" : "Mute";
+  // mute시 volumeRange를 0으로
+  // mute 해제시 원래 볼륨 값으로 돌아감
+  volumeRange.value = video.muted ? 0 : volumeValue;
+}
+// 볼륨 조절 시 콜백함수
+const handleVolumeInput = (event) => {
+  // console.log(event.target); ==> imput안의 속성 요소에 접근할 수 있음
+  // console.log(event.target.value); ==> imput안의 속성 요소의 값에 접근할 수 있음
+  const {target: {value}} = event;
+  if(video.muted){
+    video.muted = false;
+    muteBtn.innerText = 'Mute';
+  }
+  volumeValue = value; // 비디오 볼륨 값에 대입되는 volume 변수에 html range 값을 대입
+  video.volume = volumeValue; // 실제 비디오 볼륨에 값 대입
+
 }
 
-play.addEventListener("click", handlePlay);
-mute.addEventListener("click", handleMute);
+
+// 이벤트 리스너
+playBtn.addEventListener("click", handlePlayClick);
+muteBtn.addEventListener("click", handleMute);
+volumeRange.addEventListener("input", handleVolumeInput); 
+// mdn 문서 event에 나왔있듯이 
+// change : 마우스 놓을 때 이벤트 발생
+// input : 실시간으로 이벤트 발생
+//. ==> 콜백 함수의 event인자를 통해 확인 가능
+
+/* HTMLMediaElement에 관한 MDN 문서를 살펴보면
+     * 속성 : eventListener가 어떠한 행동을 할 때의 조건을 bool 값으로 반환
+     * 메서드 : eventListener가 이벤트를 들었을 때 어떠한 행동을 해야하는지 확인
+     * 이벤트 : eventListener가 어떤 동작을 들어야 하는지 확인
+     * 
+     ==> video, audio 태그는 HTMLMediaElement 인터페이스를 상속함
+     ==> 이때 video 태그의 속성과 메서드에 js가 접근할 수 있는 것
+*/
