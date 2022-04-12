@@ -6,8 +6,8 @@ const userSchema = new mongoose.Schema({
   avatarUrl : String,
   socialOnly: {type: Boolean, default: false}, // true일경우 github 로그인만 가능(password 로그인x), 기본값은 false로
   username: {type: String, required: true, unique: true},
-  password: {type: String, required: false}, // github 로그인 때문에 required: false
-  name: {type: String, required: false}, // github에 name 설정 안해서 null 값 return 될 수 있기에
+  password: {type: String}, // github 로그인 때문에 required: false
+  name: {type: String}, // github에 name 설정 안해서 null 값 return 될 수 있기에
   location: String,
   videos: [{type: mongoose.Schema.Types.ObjectId, ref: 'Video'}] // 배열처리
 });

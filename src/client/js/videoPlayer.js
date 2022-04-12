@@ -4,6 +4,7 @@ const muteBtn = document.querySelector("#mute");
 const volumeRange = document.querySelector("#volume");
 const currentTime = document.querySelector("#currentTime");
 const totalTime = document.querySelector("#totalTime");
+const timeline = document.querySelector("#timeline");
 
 // ### 기본 작동 원리 : video 태그의 volume, play, pause 등의 속성들과
 // 새로 만들어진 html 조절 태그들의 값을 연동시켜줌
@@ -58,8 +59,9 @@ const handleVolumeInput = (event) => {
 // event를 안받아도 loadedmetadata 이벤트가 발생해
 // 아래 함수가 실행되어야지 video의 duration을 알 수 있다.
 const handleLoadedmetadata = () => {
-  console.log(formatTime(13));
   totalTime.innerText = formatTime(Math.floor(video.duration));
+  // timeline 태그의 비디오 총길이 받기
+  timeline.max = Math.floor(video.duration);
 }
 
 // 비디오 진행시간
@@ -67,6 +69,8 @@ const handleTimeUpdate = (event) => {
   // 시간 태그 안에 비디오 진행 시간을 넣어주되
   // timeupdate 발생 시마다 넣어줘서 실시간 업데이트됨
   currentTime.innerText = formatTime(Math.floor(video.currentTime)) + " ";
+  // 비디오 진행시간 timeline 요소의 value 값으로 실시간 업데이트
+  timeline.value = Math.floor(video.currentTime);
 }
 
 // 시간 형식 변경
@@ -75,13 +79,19 @@ const formatTime = (seconds) => {
   return new Date(seconds * 1000).toISOString().substring(14,19);
 }
 
+// timeline 태그 range 변경 시 실제 video range도 변경
+const handleTimeline = (event) => {
+  const {target: {value}} = event;
+  video.currentTime = value;
+}
+
 // 이벤트 리스너
 playBtn.addEventListener("click", handlePlayClick);
 muteBtn.addEventListener("click", handleMute);
 volumeRange.addEventListener("input", handleVolumeInput); 
 video.addEventListener("loadedmetadata", handleLoadedmetadata); // video 이외 정보(duration)
 video.addEventListener("timeupdate", handleTimeUpdate); // video의 진행 위치(시간) update시 발생
-
+timeline.addEventListener("input", handleTimeline);
 
 
 // mdn 문서 event에 나왔있듯이 
@@ -91,6 +101,7 @@ video.addEventListener("timeupdate", handleTimeUpdate); // video의 진행 위�
 
 /* HTMLMediaElement에 관한 MDN 문서를 살펴보면
      * 속성 : eventListener가 어떠한 행동을 할 때의 조건을 bool 값으로 반환
+      ==> readOnly 요소는 속성 값 재지정 불가
      * 메서드 : eventListener가 이벤트를 들었을 때 어떠한 행동을 해야하는지 확인
      * 이벤트 : eventListener가 어떤 동작을 들어야 하는지 확인
      * 

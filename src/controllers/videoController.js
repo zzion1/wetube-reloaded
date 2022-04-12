@@ -21,7 +21,7 @@ import User from "../models/User";
 export const home = async (req, res) => {
   // promise 사용시
   try{
-    const videos = await Video.find({}).sort({createdAt: "asc"}).populate("owner"); // find한 db를 videos 변수에 대입. 보여주기 방식 설정 가능
+    const videos = await Video.find({}).sort({createdAt: "asc"}); // find한 db를 videos 변수에 대입. 보여주기 방식 설정 가능
     return res.render("videos/home", {pageTitle: "Home", videos})
   } catch{
     return res.render("videos/server-error"); // 에러 발생 시 try, catch 구문 사용

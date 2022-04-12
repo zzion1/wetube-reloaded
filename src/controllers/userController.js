@@ -43,7 +43,7 @@ export const postJoin = async (req, res) => {
   } catch(error) {
     return res.status(400).render("users/join", {
       pageTitle: "Join",
-      errorMessage: error._message
+      errorMessage: error
     });
   }
 }
