@@ -5,6 +5,8 @@ const volumeRange = document.querySelector("#volume");
 const currentTime = document.querySelector("#currentTime");
 const totalTime = document.querySelector("#totalTime");
 const timeline = document.querySelector("#timeline");
+const fullscreen = document.querySelector("#fullscreen");
+const videoContainer = document.querySelector("#videoContainer");
 
 // ### 기본 작동 원리 : video 태그의 volume, play, pause 등의 속성들과
 // 새로 만들어진 html 조절 태그들의 값을 연동시켜줌
@@ -85,6 +87,22 @@ const handleTimeline = (event) => {
   video.currentTime = value;
 }
 
+// 비디오 전체화면
+const handleFullscreen = () => {
+   // 속성이 document에서 불러지는지 element에서 불러지는지 잘 확인!!!!
+
+  const fullscreenElement = document.fullscreenElement;
+  // fullscreen을 video 태그 안에 쓰면 다른 버튼 제외 비디오만 풀스크린이 된다.
+  if (fullscreenElement){
+    document.exitFullscreen();
+    fullscreen.innerText = "Enter Full Screen";
+  }
+  else{
+    videoContainer.requestFullscreen();
+    fullscreen.innerText = "Exit Full Screen";
+  }
+}
+
 // 이벤트 리스너
 playBtn.addEventListener("click", handlePlayClick);
 muteBtn.addEventListener("click", handleMute);
@@ -92,6 +110,7 @@ volumeRange.addEventListener("input", handleVolumeInput);
 video.addEventListener("loadedmetadata", handleLoadedmetadata); // video 이외 정보(duration)
 video.addEventListener("timeupdate", handleTimeUpdate); // video의 진행 위치(시간) update시 발생
 timeline.addEventListener("input", handleTimeline);
+fullscreen.addEventListener("click", handleFullscreen);
 
 
 // mdn 문서 event에 나왔있듯이 
