@@ -7,6 +7,8 @@ const totalTime = document.querySelector("#totalTime");
 const timeline = document.querySelector("#timeline");
 const fullscreen = document.querySelector("#fullscreen");
 const videoContainer = document.querySelector("#videoContainer");
+const videoControls = document.querySelector("#videoControls");
+let controlsMovementTimeout = null; // setTImeout의 return 값인 id 전역변수 설정
 
 // ### 기본 작동 원리 : video 태그의 volume, play, pause 등의 속성들과
 // 새로 만들어진 html 조절 태그들의 값을 연동시켜줌
@@ -103,6 +105,32 @@ const handleFullscreen = () => {
   }
 }
 
+const hideControls = () => {
+  videoControls.classList.remove("showing");
+}
+
+const handleMouseMove = () => {
+  // 기능 1) 비디오 안으로 마우스가 들어왔을 경우 controls showing
+  videoControls.classList.add("showing");
+  // 기능 4) 비디오 영역 안에서 마우스가 멈춰서 contorls를 없애는 timeout을 실행하려는데
+  // 마우스가 다시 움직인 경우 ==> clearTimeout
+  if (controlsMovementTimeout){
+    clearTimeout(controlsMovementTimeout);
+    controlsMovementTimeout = null;
+  }
+  // 기능 3) 비디오 영역 안에서 마우스가 움직일 때마다 3초 타임아웃 설정
+  // => 멈추면 바로 contorls 사라지도록 하기 위해
+  controlsMovementTimeout = setTimeout(hideControls, 3000);
+}
+
+const handleMouseLeave = () => {
+  // 3초 후에 콜백 함수 실행
+  // 기능 2) 비디오 영역 밖으로 마우스가 나갔을 경우 3초 후에 controls remove
+  // but, 마우스가 3초안에 다시 들어와도 removeClass한다는 issue
+  // so, mouse가 다시 enter 했을 땐 clearTimeout ==> setTimeout의 return값인 고유 id 활용
+  setTimeout(hideControls, 3000);
+}
+
 // 이벤트 리스너
 playBtn.addEventListener("click", handlePlayClick);
 muteBtn.addEventListener("click", handleMute);
@@ -111,6 +139,8 @@ video.addEventListener("loadedmetadata", handleLoadedmetadata); // video 이외 
 video.addEventListener("timeupdate", handleTimeUpdate); // video의 진행 위치(시간) update시 발생
 timeline.addEventListener("input", handleTimeline);
 fullscreen.addEventListener("click", handleFullscreen);
+video.addEventListener("mousemove", handleMouseMove);
+video.addEventListener("mouseleave", handleMouseLeave);
 
 
 // mdn 문서 event에 나왔있듯이 
